@@ -13,6 +13,7 @@ import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
 //This is a test comment
+//This is a test comment in new branch
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window 
