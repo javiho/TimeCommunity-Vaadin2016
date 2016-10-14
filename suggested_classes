@@ -1,0 +1,35 @@
+Possible classes which can be used by all views:
+- user
+	- name
+	- (username?)
+	- gender
+	- position
+	- interested field
+	- (courses that user has shared)
+	- (user's collections)
+	- (schedule)
+	- (own comments)
+	- profile picture (shown next to comments)
+	- password
+- course
+	- title
+	- time
+	- location
+	- short description
+	- more information
+	- (comments)
+	- (list of individual lectures or other sessions)
+- lecture (or course session)
+	- start time and date
+	- duration
+	- location
+	- (course of which this lecture is part of)
+- comment
+	- writer
+	- content
+	- time when written
+	- (replies?)
+- (comment hierarchy?)
+
+- class for saving to database and retrieving from database
+	- saves and retrieves for instance, User, Event and Comment objects
