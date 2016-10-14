@@ -27,7 +27,7 @@ public class MyUI extends UI {
         final VerticalLayout layout = new VerticalLayout();
         
         final TextField name = new TextField();
-        name.setCaption("Type your name :");
+        name.setCaption("Type your name here:");
 
         Button button = new Button("Click Me");
         button.addClickListener( e -> {
@@ -36,6 +36,10 @@ public class MyUI extends UI {
         });
         
         layout.addComponents(name, button);
+        
+        DatabaseProxy dbp = new DatabaseProxy();
+        Course[] courses = dbp.getCourses();
+        layout.addComponent(new ScheduleComponent(courses));
         layout.setMargin(true);
         layout.setSpacing(true);
         
