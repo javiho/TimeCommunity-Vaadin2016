@@ -42,7 +42,7 @@ public class ScheduleComponent extends CustomComponent{
 	private int firstDataRow = 1;
 	private LocalTime firstHourOfDay = LocalTime.of(8, 0);
 	private LocalTime lastHourOfDay = LocalTime.of(23, 0);
-	private GridLayout eventsLayout;
+	private GridLayout eventsFrame;
 	private WeekNavigationComponent weekNavigationComponent;
 	VerticalLayout mainLayout;
 	private final int weekDaysCount = 7;
@@ -50,20 +50,20 @@ public class ScheduleComponent extends CustomComponent{
 	public ScheduleComponent(Course[] courses){
 		this.courses = courses;
 		this.mainLayout = new VerticalLayout();
-        this.eventsLayout = new GridLayout(8, 16);
+        this.eventsFrame = new GridLayout(8, 16);
         this.displayedWeek = LocalDateTime.now();
         this.weekNavigationComponent = new WeekNavigationComponent(displayedWeek, this);
-        eventsLayout.setSizeFull();
+        eventsFrame.setSizeFull();
         mainLayout.setSizeFull();
         weekNavigationComponent.setSizeFull();
         //setSizeFull();
-        eventsLayout.setWidth("750px");
-        eventsLayout.setHeight("750px");
+        eventsFrame.setWidth("750px");
+        eventsFrame.setHeight("750px");
         //weekNavigationComponent.setWidth("750px"); EI TOIMI
         //weekNavigationComponent.setHeight("80px"); EI TOIMI
 		updateEventsLayout(LocalDate.of(2016, Month.OCTOBER, 10), this.courses);
 		mainLayout.addComponent(weekNavigationComponent);
-		mainLayout.addComponent(eventsLayout);
+		mainLayout.addComponent(eventsFrame);
 		setCompositionRoot(mainLayout);
     }
 	
@@ -101,23 +101,23 @@ public class ScheduleComponent extends CustomComponent{
 	 * Pre-condition: none of the CourseSessions in courses must span from one day to another.
 	 */
 	private void updateEventsLayout(LocalDate weekStartDate, Course[] courses){
-		GridLayout el = eventsLayout;
-		el.removeAllComponents();
+		GridLayout ef = eventsFrame;
+		ef.removeAllComponents();
 		LocalDate[] weekDays = new LocalDate[weekDaysCount];
 		for(int i = 0; i < weekDays.length; i++){
 			weekDays[i] = weekStartDate.plusDays(i);
 		}
 		//Add column titles
 		int weekDayIndex = 0;
-		for(int c = firstDataColumn; c < el.getColumns(); c++){
-			el.addComponent(new Label(weekDays[weekDayIndex].toString()), c, 0);
+		for(int c = firstDataColumn; c < ef.getColumns(); c++){
+			ef.addComponent(new Label(weekDays[weekDayIndex].toString()), c, 0);
 			weekDayIndex++;
 		}
 		//Add row titles
 		int firstHourInt = firstHourOfDay.getHour();
-		for(int r = firstDataRow; r < el.getRows(); r++){
+		for(int r = firstDataRow; r < ef.getRows(); r++){
 			int hour = firstHourInt + (r - firstDataRow);
-			el.addComponent(new Label(hour + " - " + (hour + 1)), 0, r);
+			ef.addComponent(new Label(hour + " - " + (hour + 1)), 0, r);
 		}
 		fillDataAreaWithEmptyLabels();
 		//Add course sessions
@@ -142,18 +142,18 @@ public class ScheduleComponent extends CustomComponent{
 			csEnd = csStart.plusHours(cs.getDurationHours() - 1);
 			endRow = getRowByDateTime(csEnd, firstDtOfWeek, lastDtOfWeek);
 			p = createCellContent(cs.getCourse().getName());
-			clearGridLayoutArea(el, col, row, col, endRow);
-			el.addComponent(p, col, row, col, endRow);
+			clearGridLayoutArea(ef, col, row, col, endRow);
+			ef.addComponent(p, col, row, col, endRow);
 		}
 	}
 	
 	private void fillDataAreaWithEmptyLabels(){
-		GridLayout el = eventsLayout;
+		GridLayout ef = eventsFrame;
 		Panel p;
-		for(int c = firstDataColumn; c < el.getColumns(); c++){
-			for(int r = firstDataRow; r < el.getRows(); r++){
+		for(int c = firstDataColumn; c < ef.getColumns(); c++){
+			for(int r = firstDataRow; r < ef.getRows(); r++){
 				p = createCellContent("");
-				el.addComponent(p, c, r);
+				ef.addComponent(p, c, r);
 			}
 		}
 	}
