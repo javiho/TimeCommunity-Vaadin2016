@@ -15,6 +15,7 @@ import javax.servlet.annotation.WebServlet;
 
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.VaadinServletConfiguration;
+import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.server.Sizeable;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
@@ -29,9 +30,16 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 
+//KORJATTAVA TÄMÄN LUOKAN ONGELMAT
+//DUMMY-SIVUT LUOTAVA JA NAVIGAATIO NIILLE TÄSTÄ SIVUSTA
+
+/*
+ * Assumes that the first day of a week is Monday.
+ */
 public class ScheduleComponent extends CustomComponent{
 	
 	private Course[] courses;
+	private LocalDateTime displayedWeek;
 	
 	private int firstDataColumn = 1;
 	private int firstDataRow = 1;
@@ -44,42 +52,59 @@ public class ScheduleComponent extends CustomComponent{
 
 	public ScheduleComponent(Course[] courses){
 		this.courses = courses;
-        //final VerticalLayout vLayout = new VerticalLayout();
 		this.mainLayout = new VerticalLayout();
         this.eventsLayout = new GridLayout(8, 16);
-        this.weekNavigationComponent = new WeekNavigationComponent(LocalDateTime.now());
+        this.displayedWeek = LocalDateTime.now();
+        this.weekNavigationComponent = new WeekNavigationComponent(displayedWeek, this);
         eventsLayout.setSizeFull();
         mainLayout.setSizeFull();
         weekNavigationComponent.setSizeFull();
-        //fillWeekNavigationLayout(LocalDateTime.now());
         //setSizeFull();
         eventsLayout.setWidth("750px");
         eventsLayout.setHeight("750px");
-        //weekNavigationComponent.setWidth("750px");
-        //weekNavigationComponent.setHeight("80px");
+        //weekNavigationComponent.setWidth("750px"); EI TOIMI
+        //weekNavigationComponent.setHeight("80px"); EI TOIMI
 		updateEventsLayout(LocalDate.of(2016, Month.OCTOBER, 10), this.courses);
-		Label weekNavigation = new Label("Week navigation is added here later.");
 		mainLayout.addComponent(weekNavigationComponent);
-		//mainLayout.addComponent(weekNavigation);
 		mainLayout.addComponent(eventsLayout);
 		setCompositionRoot(mainLayout);
     }
 	
-	public void setCourses(Course[] courses){
-		this.courses = courses;
+	public void onPreviousWeekButtonClick(Button.ClickEvent e){
+		LocalDateTime previousWeek = this.displayedWeek.plusWeeks(-1);
+		updateTime(previousWeek);
+	}
+	
+	public void onNextWeekButtonClick(Button.ClickEvent e){
+		LocalDateTime nextWeek = this.displayedWeek.plusWeeks(1);
+		updateTime(nextWeek);
+	}
+	
+	private void updateTime(LocalDateTime weekStartDt){
+		LocalDate weekStartDate = weekStartDt.toLocalDate();
+		this.displayedWeek = weekStartDt;
+		updateEventsLayout(weekStartDate, courses);
+		weekNavigationComponent.update(weekStartDt);
+	}
+	
+	/*
+	 * MISTÄ TÄTÄ KUTSUTAAN?
+	 */
+	private void updateCourses(Course[] courses){
+		//TODO
 	}
 	
 	/*
 	 * OVERLAPPAAMISTA EI OTETA VIELÄ HUOMIOON
-	 * ENTÄ JOS MENEE SEURAAVAN VUOROKAUDEN PUOLELLE? TAI ALKAA ENNEN ENSIMMÄISTÄ KELLONAIKAA?
-	 * OLETETAAN, ETTÄ MIKÄÄN EI JATKU SEURAAVAN VUOROKAUDEN PUOLELLE
+	 * ENTÄ JOS ALKAA ENNEN ENSIMMÄISTÄ KELLONAIKAA?
 	 * ENTÄ JOS ENSIMMÄINEN KELLONAIKA MUUTTUU?
 	 * PITÄISIKÖ MÄÄRITELLÄ VIIMEINEN KELLONAIKA, KUN KERRAN ENSIMMÄINENKIN ON MÄÄRITELTY?
 	 * MIKÄ ON VIIKON ENSIMMÄINEN PÄIVÄ?
+	 * Pre-condition: none of the CourseSessions in courses must span from one day to another.
 	 */
 	private void updateEventsLayout(LocalDate weekStartDate, Course[] courses){
-		//CLEAR?
 		GridLayout el = eventsLayout;
+		el.removeAllComponents();
 		LocalDate[] weekDays = new LocalDate[weekDaysCount];
 		for(int i = 0; i < weekDays.length; i++){
 			weekDays[i] = weekStartDate.plusDays(i);

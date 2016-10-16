@@ -6,6 +6,7 @@ import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.Locale;
 
+import com.vaadin.event.MouseEvents.ClickEvent;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.CustomComponent;
@@ -15,8 +16,10 @@ import com.vaadin.ui.Label;
 public class WeekNavigationComponent extends CustomComponent {
 
 	private HorizontalLayout layout;
+	private ScheduleComponent parent;
 	
-	public WeekNavigationComponent(LocalDateTime dt){
+	public WeekNavigationComponent(LocalDateTime dt, ScheduleComponent parent){
+		this.parent = parent;
 		layout = new HorizontalLayout();
 		layout.setWidth("750px");
         layout.setHeight("80px");
@@ -26,8 +29,9 @@ public class WeekNavigationComponent extends CustomComponent {
 	
 	public void initialize(LocalDateTime dt){
 		Label weekLabel = new Label("Unknown week");
-		Button previousButton = new Button("<<Previous");
-		Button nextButton = new Button("Next>>");
+		Button previousButton = new Button("<<Previous", parent::onPreviousWeekButtonClick);
+		Button nextButton = new Button("Next>>", parent::onNextWeekButtonClick);
+		//previousButton.addL
 		layout.addComponent(weekLabel);
 		layout.addComponent(previousButton);
 		layout.addComponent(nextButton);
