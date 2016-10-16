@@ -33,9 +33,6 @@ import com.vaadin.ui.VerticalLayout;
 //KORJATTAVA TÄMÄN LUOKAN ONGELMAT
 //DUMMY-SIVUT LUOTAVA JA NAVIGAATIO NIILLE TÄSTÄ SIVUSTA
 
-/*
- * Assumes that the first day of a week is Monday.
- */
 public class ScheduleComponent extends CustomComponent{
 	
 	private Course[] courses;
@@ -99,7 +96,8 @@ public class ScheduleComponent extends CustomComponent{
 	 * ENTÄ JOS ALKAA ENNEN ENSIMMÄISTÄ KELLONAIKAA?
 	 * ENTÄ JOS ENSIMMÄINEN KELLONAIKA MUUTTUU?
 	 * PITÄISIKÖ MÄÄRITELLÄ VIIMEINEN KELLONAIKA, KUN KERRAN ENSIMMÄINENKIN ON MÄÄRITELTY?
-	 * MIKÄ ON VIIKON ENSIMMÄINEN PÄIVÄ?
+	 * - EIKö MUKA OLE JO?
+	 * VOIKO MIKÄ TAHANSA PÄIVÄ OLLA VIIKON ENSIMMÄINEN? PITÄISIKÖ VOIDA?
 	 * Pre-condition: none of the CourseSessions in courses must span from one day to another.
 	 */
 	private void updateEventsLayout(LocalDate weekStartDate, Course[] courses){
